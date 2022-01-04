@@ -29,12 +29,12 @@ router.get("/:id", async function (req, res, next) {
     ]);
     checkData(invoices, req);
     const compCode = invoices.rows[0].comp_code;
-    const company = await db.query(`SELECT * FROM companies WHERE code = $1`, [
+    const companyResults = await db.query(`SELECT * FROM companies WHERE code = $1`, [
       compCode,
     ]);
-    delete invoices.rows[0].comp_code;
-    invoices.rows[0].company = company.rows[0];
-    return res.json({ invoice: invoices.rows[0] });
+    const { id, amt, paid, add_date, paid_date } = invoices.rows[0];
+    const company = companyResults.rows[0]
+    return res.json({ invoice: {id, amt, paid, add_date, paid_date, company} });
   } catch (e) {
     next(e);
   }
