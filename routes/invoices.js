@@ -41,48 +41,48 @@ router.get("/:id", async function (req, res, next) {
 });
 
 router.post("/", async function (req, res, next) {
-    try {
-      const { comp_code, amt, paid, add_date } = req.body;
-      const invoices = await db.query(
-        `INSERT INTO invoices (comp_code, amt, paid, add_date) 
+  try {
+    const { comp_code, amt, paid, add_date } = req.body;
+    const invoices = await db.query(
+      `INSERT INTO invoices (comp_code, amt, paid, add_date) 
              VALUES ($1, $2, $3, $4) 
              RETURNING id, comp_code, amt, paid, add_date, paid_date`,
-        [comp_code, amt, paid, add_date]
-      );
-      return res.json({ invoice: invoices.rows[0] });
-    } catch (e) {
-      next(e);
-    }
-  });
+      [comp_code, amt, paid, add_date]
+    );
+    return res.json({ invoice: invoices.rows[0] });
+  } catch (e) {
+    next(e);
+  }
+});
 
-  router.put("/:id", async function (req, res, next) {
-    try {
-      const { amt } = req.body;
-      const invoices = await db.query(
-        `UPDATE invoices
+router.put("/:id", async function (req, res, next) {
+  try {
+    const { amt } = req.body;
+    const invoices = await db.query(
+      `UPDATE invoices
         SET amt= $1
         WHERE id = $2
         RETURNING id, comp_code, amt, paid, add_date, paid_date`,
-        [amt, req.params.id]
-      );
-      checkData(invoices, req);
-      return res.json({ invoice: invoices.rows[0] });
-    } catch (e) {
-      next(e);
-    }
-  });
+      [amt, req.params.id]
+    );
+    checkData(invoices, req);
+    return res.json({ invoice: invoices.rows[0] });
+  } catch (e) {
+    next(e);
+  }
+});
 
-  router.delete("/:id", async function (req, res, next) {
-    try {
-      const invoices = await db.query(
-        `DELETE FROM invoices WHERE id = $1 RETURNING id`,
-        [req.params.id]
-      );
-      checkData(invoices, req);
-      return res.json({ status: "deleted" });
-    } catch (e) {
-      next(e);
-    }
-  });
+router.delete("/:id", async function (req, res, next) {
+  try {
+    const invoices = await db.query(
+      `DELETE FROM invoices WHERE id = $1 RETURNING id`,
+      [req.params.id]
+    );
+    checkData(invoices, req);
+    return res.json({ status: "deleted" });
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;

@@ -24,11 +24,15 @@ router.get("/", async function (req, res, next) {
 
 router.get("/:code", async function (req, res, next) {
   try {
-    const companies = await db.query(`SELECT * FROM companies WHERE code = $1`, [
-      req.params.code,
-    ]);
+    const companies = await db.query(
+      `SELECT * FROM companies WHERE code = $1`,
+      [req.params.code]
+    );
     checkData(companies, req);
-    const invoices = await db.query(`SELECT * FROM invoices WHERE comp_code = $1`, [req.params.code]);
+    const invoices = await db.query(
+      `SELECT * FROM invoices WHERE comp_code = $1`,
+      [req.params.code]
+    );
     companies.rows[0].invoices = invoices.rows;
     return res.json({ company: companies.rows[0] });
   } catch (e) {
