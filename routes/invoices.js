@@ -49,7 +49,7 @@ router.post("/", async function (req, res, next) {
              RETURNING id, comp_code, amt, paid, add_date, paid_date`,
       [comp_code, amt, paid, add_date]
     );
-    return res.json({ invoice: invoices.rows[0] });
+    return res.status(201).json({ invoice: invoices.rows[0] });
   } catch (e) {
     next(e);
   }

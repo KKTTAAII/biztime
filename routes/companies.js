@@ -49,7 +49,7 @@ router.post("/", async function (req, res, next) {
            RETURNING code, name, description`,
       [code, name, description]
     );
-    return res.json({ company: comapnies.rows[0] });
+    return res.status(201).json({ company: comapnies.rows[0] });
   } catch (e) {
     next(e);
   }
