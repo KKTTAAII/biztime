@@ -4,6 +4,7 @@ const app = require("../app");
 const db = require("../db");
 
 let mockCompany;
+let mockIndustry;
 
 beforeEach(async function () {
   let company = await db.query(
@@ -11,11 +12,24 @@ beforeEach(async function () {
     VALUES ('vrbo', 'VRBO', 'vacation rental') 
     RETURNING code, name, description`
   );
+  let industry = await db.query(
+    `INSERT INTO industries (code, industry) 
+    VALUES ('vcr', 'vacation rental') 
+    RETURNING code, industry`
+  );
+  let comp_industry = await db.query(
+    `INSERT INTO company_industries (comp_code, industry_code) 
+    VALUES ('vrbo', 'vcr') 
+    RETURNING comp_code, industry_code`
+  );
   mockCompany = company.rows[0];
+  mockIndustry = industry.rows[0]
 });
 
 afterEach(async function () {
   await db.query("DELETE FROM companies");
+  await db.query("DELETE FROM industries");
+  await db.query("DELETE FROM company_industries");
 });
 
 afterAll(async function () {
@@ -26,6 +40,7 @@ describe("GET /companies", function () {
   test("Gets a list of a company", async function () {
     const response = await request(app).get(`/companies`);
     expect(response.statusCode).toEqual(200);
+    mockCompany.industry = mockIndustry.industry;
     expect(response.body).toEqual({ companies: [mockCompany] });
   });
 });
@@ -34,6 +49,7 @@ describe("GET /companies/:id", function () {
   test("Gets a single company", async function () {
     const response = await request(app).get(`/companies/${mockCompany.code}`);
     mockCompany.invoices = [];
+    mockCompany.industry = [mockIndustry.industry]
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ company: mockCompany });
   });
@@ -81,7 +97,7 @@ describe("PUT /companies/:id", function () {
   });
 
   test("Responds with 404 if can't find company", async function () {
-    const response = await request(app).patch(`/companies/gsjkgf`);
+    const response = await request(app).put(`/companies/gsjkgf`);
     expect(response.statusCode).toEqual(404);
   });
 });

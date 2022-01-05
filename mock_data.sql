@@ -6,6 +6,8 @@ CREATE DATABASE biztime_test;
 
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS companies;
+DROP TABLE IF EXISTS industries;
+DROP TABLE IF EXISTS company_industries;
 
 CREATE TABLE companies (
     code text PRIMARY KEY,
@@ -21,4 +23,14 @@ CREATE TABLE invoices (
     add_date date DEFAULT CURRENT_DATE NOT NULL,
     paid_date date,
     CONSTRAINT invoices_amt_check CHECK ((amt > (0)::double precision))
+);
+
+CREATE TABLE industries (
+  code text PRIMARY KEY,
+  industry text NOT NULL UNIQUE 
+);
+
+CREATE TABLE company_industries (
+  comp_code text NOT NULL REFERENCES companies ON DELETE CASCADE,
+  industry_code text NOT NULL REFERENCES industries ON DELETE CASCADE
 );

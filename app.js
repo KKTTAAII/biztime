@@ -12,6 +12,8 @@ const companiesRoutes = require("./routes/companies")
 app.use("/companies", companiesRoutes)
 const invoicesRoutes = require("./routes/invoices")
 app.use("/invoices", invoicesRoutes)
+const industriesRoutes = require("./routes/industries")
+app.use("/industries", industriesRoutes)
 
 
 

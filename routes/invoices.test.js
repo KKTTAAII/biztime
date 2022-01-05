@@ -101,22 +101,23 @@ describe("PUT /invoices/:id", function () {
       .put(`/invoices/${mockInvoice.id}`)
       .send({
         amt: 900,
+        paid: true
       });
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({
       invoice: {
         comp_code: "vrbo",
         amt: 900,
-        paid: false,
+        paid: true,
         add_date: "2022-01-04T07:00:00.000Z",
         id: expect.any(Number),
-        paid_date: null,
+        paid_date: "2022-01-04T07:00:00.000Z",
       },
     });
   });
 
   test("Responds with 404 if can't find invoice", async function () {
-    const response = await request(app).patch(`/invoices/98`);
+    const response = await request(app).put(`/invoices/98`);
     expect(response.statusCode).toEqual(404);
   });
 });
