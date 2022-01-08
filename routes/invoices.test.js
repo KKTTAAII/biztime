@@ -37,7 +37,7 @@ describe("GET /invoices", function () {
     expect(response.body).toEqual({
       invoices: [
         {
-          add_date: "2022-01-04T07:00:00.000Z",
+          add_date: new Date("2022-01-04"),
           amt: 100,
           comp_code: "vrbo",
           id: mockInvoice.id,
@@ -111,7 +111,7 @@ describe("PUT /invoices/:id", function () {
         paid: true,
         add_date: "2022-01-04T07:00:00.000Z",
         id: expect.any(Number),
-        paid_date: "2022-01-04T07:00:00.000Z",
+        paid_date: new Date(),
       },
     });
   });
